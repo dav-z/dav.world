@@ -1,16 +1,108 @@
-<style>
-        body, html {
-            height: 100%; /* Ensure html and body take full viewport height */
-            margin: 0; /* Remove default body margin */
-            padding: 0; /* Remove default body padding */
-        }
-
-        body {
-            background-image: url(''); /* Replace with your image path */
-            background-repeat: no-repeat; /* Prevent image from repeating */
-            background-position: center center; /* Center the image */
-            background-size: cover; /* Scale the image to cover the entire background */
-            background-attachment: fixed; /* Keep the background fixed when scrolling (optional) */
-        }
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Nemesis Foundation is a 501(c)(3) nonprofit organization. Our website is under construction." />
+    <title>Nemesis Foundation — 501(c)(3) Nonprofit</title>
+    <style>
+      /* Minimal, document-like styles */
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+        color: #000000;
+        font-family: "Times New Roman", Times, serif;
+        line-height: 1.5;
+      }
+      .page {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 32px;
+      }
+      h1, h2, h3 {
+        font-weight: bold;
+        margin: 0 0 12px 0;
+      }
+      h1 { font-size: 28px; }
+      h2 { font-size: 22px; margin-top: 24px; }
+      h3 { font-size: 18px; margin-top: 16px; }
+      p { margin: 0 0 12px 0; }
+      ul { margin: 8px 0 16px 24px; padding: 0; }
+      a { color: inherit; text-decoration: underline; }
+      hr { border: none; border-top: 1px solid #000; margin: 24px 0; }
+      .toc { margin: 12px 0 20px 0; }
+      .muted { font-style: italic; }
+      .legal { margin-top: 24px; font-size: 15px; }
+      /* Two-column list using columns; will stack on small screens naturally */
+      .two-columns {
+        column-count: 2;
+        column-gap: 24px;
+      }
+      @media (max-width: 640px) {
+        .page { padding: 24px 16px; }
+        .two-columns { column-count: 1; }
+      }
     </style>
-hi it me dav
+  </head>
+  <body>
+    <div class="page">
+      <h1>Nemesis Foundation</h1>
+      <p>A 501(c)(3) nonprofit organization. Website under construction.</p>
+
+      <div class="toc">
+        <p><strong>Contents:</strong> <a href="#mission">Mission Statement</a> · <a href="#about">About</a> · <a href="#grantees">Previous Grantees</a> · <a href="#contact">Contact</a></p>
+      </div>
+
+      <hr />
+
+      <h2 id="mission">Mission Statement</h2>
+      <p>We seek to protect the ethereal and ephemeral, through art and psycho spiritual exploration.</p>
+
+      <h2 id="about">About</h2>
+      <p></p>
+      <ul>
+        <li><strong>Status:</strong> 501(c)(3) nonprofit organization</li>
+        <li><strong>Formerly:</strong> LLS Foundation</li>
+      </ul>
+
+      <h2 id="grantees">Previous Grantees</h2>
+      <ul class="two-columns">
+        <li>Community Leaders Resiliency Fund (Oregon Psilocybin)</li>
+        <li>Council For Native Hawaiian Advancement</li>
+        <li>Fireside</li>
+        <li>GHB Cluster Headache Trial</li>
+        <li>Hawaiian Natives Peyote Ceremony</li>
+        <li>Healing Advocacy Fund</li>
+        <li>Indigenous Artists &amp; Coca Assessment</li>
+        <li>LSU Anti-Inflammation Research</li>
+        <li>Lalakea Foundation</li>
+        <li>Love Serve Remember Foundation</li>
+        <li>N+1</li>
+        <li>Pioneer Works Art Foundation</li>
+        <li>Poi Foundation</li>
+        <li>Urban Indigenous Collective NY</li>
+        <li>Waipa Foundation</li>
+        <li>White Columns</li>
+        <li>World Health Organization Coca Leaf Advocacy</li>
+      </ul>
+
+      <h2 id="contact">Contact</h2>
+      <h3>Email</h3>
+      <p><a href="mailto:david@nmsfnd.org">david@nmsfnd.org</a></p>
+
+      <hr />
+
+      <p class="legal"><strong>Nemesis Foundation</strong><br />A 501(c)(3) nonprofit organization. Contributions are tax-deductible to the extent allowed by law. EIN: 12-3456789</p>
+      <p class="muted">© <span id="year"></span> Nemesis Foundation. All rights reserved.</p>
+    </div>
+
+    <script>
+      // Minimal script to set current year; no other JS used
+      (function () {
+        var el = document.getElementById('year');
+        if (el) el.textContent = new Date().getFullYear();
+      })();
+    </script>
+  </body>
+</html>
