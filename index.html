@@ -225,7 +225,7 @@
         <div class="modal-content">
             <span class="close-btn" id="closeModal">&times;</span>
             <div id="popup-grid"></div>
-            <button id="downloadBtn" class="download-btn">Save as Image</button>
+            <button id="downloadBtn" class="download-btn">Save as Centered Image</button>
         </div>
     </div>
 
@@ -244,12 +244,22 @@
 
         // Initialize Main Grid (Number Picker Palette)
         function setupGrid() {
+            // Numbers that will load as automatically excluded (Red)
+            const preExcludedNumbers = [14, 47, 48, 60, 67, 75, 139, 143, 224];
+
             for (let i = 0; i < TOTAL_CELLS; i++) {
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
-                cell.textContent = i + 1;
+                let cellNumber = i + 1;
+                cell.textContent = cellNumber;
                 cell.dataset.index = i;
                 
+                // Pre-load logic for specific tiles
+                if (preExcludedNumbers.includes(cellNumber)) {
+                    tileStates[i] = 1; // 1 = Excluded state
+                    cell.classList.add('excluded');
+                }
+
                 cell.addEventListener('click', () => {
                     let idx = parseInt(cell.dataset.index);
                     tileStates[idx] = (tileStates[idx] + 1) % 3;
