@@ -1,115 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Nemesis Foundation is a 501(c)(3) nonprofit organization. Our website is under construction." />
-    <title>Nemesis Foundation — 501(c)(3) Nonprofit</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Shape & Number Generator</title>
     <style>
-      /* Minimal, document-like styles */
-      html, body {
-        margin: 0;
-        padding: 0;
-        background: #ffffff;
-        color: #000000;
-        font-family: "Times New Roman", Times, serif;
-        line-height: 1.5;
-      }
-      .page {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 40px 32px;
-      }
-      h1, h2, h3 {
-        font-weight: bold;
-        margin: 0 0 12px 0;
-      }
-      h1 { font-size: 28px; }
-      h2 { font-size: 22px; margin-top: 24px; }
-      h3 { font-size: 18px; margin-top: 16px; }
-      p { margin: 0 0 12px 0; }
-      ul { margin: 8px 0 16px 24px; padding: 0; }
-      a { color: inherit; text-decoration: underline; }
-      hr { border: none; border-top: 1px solid #000; margin: 24px 0; }
-      .toc { margin: 12px 0 20px 0; }
-      .muted { font-style: italic; }
-      .legal { margin-top: 24px; font-size: 15px; }
-      /* Two-column list using columns; will stack on small screens naturally */
-      .two-columns {
-        column-count: 2;
-        column-gap: 24px;
-      }
-      @media (max-width: 640px) {
-        .page { padding: 24px 16px; }
-        .two-columns { column-count: 1; }
-      }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f9;
+            padding: 2rem;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="number"] {
+            padding: 8px;
+            font-size: 16px;
+            width: 80px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 11 columns, 21 rows */
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(11, 30px);
+            grid-template-rows: repeat(21, 30px);
+            gap: 1px;
+            background-color: #ddd;
+            border: 2px solid #333;
+            padding: 1px;
+        }
+
+        .cell {
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            transition: background-color 0.3s;
+            /* Added Flexbox to center the text perfectly */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: transparent; /* Hide text if inactive */
+        }
+
+        .cell.active {
+            background-color: #ff4757; /* Color of the generated shape */
+            color: white; /* Make the number visible */
+        }
     </style>
-  </head>
-  <body>
-    <div class="page">
-      <h1>Nemesis Foundation</h1>
-      <p>A 501(c)(3) nonprofit organization. Website under construction.</p>
+</head>
+<body>
 
-      <div class="toc">
-        <p><strong>Contents:</strong> <a href="#mission">Mission Statement</a> · <a href="#about">About</a> · <a href="#grantees">Previous Grantees</a> · <a href="#contact">Contact</a></p>
-      </div>
-
-      <hr />
-
-      <h2 id="mission">Mission Statement</h2>
-      <p>We seek to protect the ethereal and ephemeral, through art and psycho spiritual exploration.</p>
-
-      <h2 id="about">About</h2>
-      <p></p>
-      <ul>
-        <li><strong>Status:</strong> 501(c)(3) nonprofit organization</li>
-        <li><strong>Formerly:</strong> LLS Foundation</li>
-      </ul>
-
-      <h2 id="grantees">Previous Grantees</h2>
-      <ul class="two-columns">
-        <li>Artists Space</li>
-        <li>Community Leaders Resiliency Fund (Oregon Psilocybin)</li>
-        <li>Council For Native Hawaiian Advancement</li>
-        <li>Fireside</li>
-        <li>Free Arts NYC</li>
-        <li>GHB Cluster Headache Trial</li>
-        <li>Guggenheim</li>
-        <li>Hawaiian Natives Peyote Ceremony</li>
-        <li>Healing Advocacy Fund</li>
-        <li>Indigenous Artists &amp; Coca Assessment</li>
-        <li>Indigenous Medicine Conservation Rund</li>
-        <li>LSU Anti-Inflammation Research</li>
-        <li>Lalakea Foundation</li>
-        <li>Love Serve Remember Foundation</li>
-        <li>MoMA</li>
-        <li>MoMA PS1</li>
-        <li>N+1</li>
-        <li>Pioneer Works Art Foundation</li>
-        <li>Poi Foundation</li>
-        <li>The Netherland-America Foundation, Inc.</li>
-        <li>Urban Indigenous Collective NY</li>
-        <li>Waipa Foundation</li>
-        <li>White Columns</li>
-        <li>World Health Organization Coca Leaf Advocacy</li>
-      </ul>
-
-      <h2 id="contact">Contact</h2>
-      <h3>Email</h3>
-      <p><a href="mailto:david@nmsfnd.org">david@nmsfnd.org</a></p>
-
-      <hr />
-
-      <p class="legal"><strong>Nemesis Foundation</strong><br />A 501(c)(3) nonprofit organization. Contributions are tax-deductible to the extent allowed by law.</p>
-      <p class="muted">© <span id="year"></span> Nemesis Foundation. All rights reserved.</p>
+    <div class="controls">
+        <label for="numSquares">Number of Squares (1-100):</label>
+        <input type="number" id="numSquares" min="1" max="100" value="10">
+        <button id="generateBtn">Generate Shape</button>
     </div>
 
+    <div id="grid"></div>
+
     <script>
-      // Minimal script to set current year; no other JS used
-      (function () {
-        var el = document.getElementById('year');
-        if (el) el.textContent = new Date().getFullYear();
-      })();
+        const COLS = 11;
+        const ROWS = 21;
+        const gridElement = document.getElementById('grid');
+
+        // Initialize the grid layout
+        function setupGrid() {
+            for (let i = 0; i < ROWS * COLS; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.id = `cell-${i}`;
+                gridElement.appendChild(cell);
+            }
+        }
+
+        // Generate a random contiguous shape
+        function generateShape() {
+            const inputVal = parseInt(document.getElementById('numSquares').value, 10);
+            
+            if (isNaN(inputVal) || inputVal < 1 || inputVal > 100) {
+                alert("Please enter a valid number between 1 and 100.");
+                return;
+            }
+
+            // Clear previous shape and old numbers
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.classList.remove('active');
+                cell.textContent = ''; 
+            });
+
+            let shapeCoordinates;
+            let success = false;
+
+            // Loop until a shape is successfully generated without getting trapped
+            while (!success) {
+                shapeCoordinates = new Set();
+                
+                // Pick a random starting point
+                let startR = Math.floor(Math.random() * ROWS);
+                let startC = Math.floor(Math.random() * COLS);
+                shapeCoordinates.add(`${startR},${startC}`);
+
+                let trapped = false;
+
+                // Grow the shape until it reaches the requested size
+                for (let i = 1; i < inputVal; i++) {
+                    let validNeighbors = new Set();
+
+                    // Find all empty neighbors adjacent to the current shape
+                    shapeCoordinates.forEach(coord => {
+                        let [r, c] = coord.split(',').map(Number);
+                        const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]; // Up, Down, Left, Right
+
+                        for (let [dr, dc] of directions) {
+                            let nr = r + dr;
+                            let nc = c + dc;
+
+                            // Check if the neighbor is within grid bounds
+                            if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
+                                if (!shapeCoordinates.has(`${nr},${nc}`)) {
+                                    validNeighbors.add(`${nr},${nc}`);
+                                }
+                            }
+                        }
+                    });
+
+                    let neighborsArray = Array.from(validNeighbors);
+
+                    // If there are no valid neighbors, the shape is trapped in a corner/loop
+                    if (neighborsArray.length === 0) {
+                        trapped = true;
+                        break;
+                    }
+
+                    // Pick a random valid neighbor and add it to the shape
+                    let randomPick = neighborsArray[Math.floor(Math.random() * neighborsArray.length)];
+                    shapeCoordinates.add(randomPick);
+                }
+
+                // If we didn't get trapped, exit the while loop
+                if (!trapped) {
+                    success = true;
+                }
+            }
+
+            // Render the final shape onto the grid and assign numbers
+            shapeCoordinates.forEach(coord => {
+                let [r, c] = coord.split(',').map(Number);
+                let index = r * COLS + c;
+                let cellElement = document.getElementById(`cell-${index}`);
+                
+                cellElement.classList.add('active');
+                
+                // Assign a random number 1-231
+                let randomNum = Math.floor(Math.random() * 231) + 1;
+                cellElement.textContent = randomNum;
+            });
+        }
+
+        // Setup the grid on page load
+        setupGrid();
+
+        // Event Listeners
+        document.getElementById('generateBtn').addEventListener('click', generateShape);
+        document.getElementById('numSquares').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') generateShape();
+        });
     </script>
-  </body>
+</body>
 </html>
