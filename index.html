@@ -3,26 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Shape & Number Generator</title>
+    <title>Interactive Shape Generator</title>
     <style>
+        :root {
+            --bg-color: #f4f4f9;
+            --neutral-cell: #ffffff;
+            --excluded-cell: #ff4757;
+            --required-cell: #2ed573;
+            --shape-cell: #3742fa;
+            --grid-border: #333;
+        }
+
         body {
             font-family: system-ui, -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #f4f4f9;
+            background-color: var(--bg-color);
             padding: 2rem;
+            margin: 0;
         }
 
-        .controls {
+        .instructions {
+            background: #fff;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            max-width: 600px;
             margin-bottom: 20px;
+            text-align: center;
+            border-left: 5px solid #007bff;
+        }
+
+        .instructions h3 { margin: 0 0 10px 0; color: #333; }
+        .instructions p { margin: 5px 0; font-size: 15px; color: #555; }
+
+        .controls {
             background: white;
-            padding: 15px 20px;
+            padding: 15px 25px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             display: flex;
-            gap: 10px;
+            flex-direction: column;
+            gap: 15px;
             align-items: center;
+            margin-bottom: 20px;
+            max-width: 600px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .legend {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-box {
+            width: 15px;
+            height: 15px;
+            border: 1px solid #ccc;
         }
 
         input[type="number"] {
@@ -44,157 +98,345 @@
             transition: background-color 0.2s;
         }
 
-        button:hover {
-            background-color: #0056b3;
+        button:hover { background-color: #0056b3; }
+        
+        .download-btn {
+            background-color: #2ed573;
+            margin-top: 15px;
         }
+        .download-btn:hover { background-color: #26b360; }
 
-        /* 11 columns, 21 rows */
-        #grid {
+        /* Main Palette Grid */
+        #main-grid {
             display: grid;
-            grid-template-columns: repeat(11, 30px);
-            grid-template-rows: repeat(21, 30px);
+            grid-template-columns: repeat(11, 35px);
+            grid-template-rows: repeat(21, 35px);
             gap: 1px;
             background-color: #ddd;
-            border: 2px solid #333;
+            border: 2px solid var(--grid-border);
             padding: 1px;
+            user-select: none;
         }
 
         .cell {
-            width: 30px;
-            height: 30px;
-            background-color: white;
-            transition: background-color 0.3s;
-            /* Added Flexbox to center the text perfectly */
+            width: 35px;
+            height: 35px;
+            background-color: var(--neutral-cell);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-            color: transparent; /* Hide text if inactive */
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+            box-sizing: border-box;
         }
 
-        .cell.active {
-            background-color: #ff4757; /* Color of the generated shape */
-            color: white; /* Make the number visible */
+        #main-grid .cell:hover { transform: scale(1.05); z-index: 10; box-shadow: 0 0 5px rgba(0,0,0,0.3); }
+
+        .cell.excluded { background-color: var(--excluded-cell); color: white; }
+        .cell.required { background-color: var(--required-cell); color: white; }
+
+        /* Modal Styles */
+        #modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        #modal.show { opacity: 1; pointer-events: all; }
+
+        .modal-content {
+            background: transparent;
+            position: relative;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: -30px;
+            right: 0;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        /* Dynamic Popup Grid */
+        #popup-grid {
+            display: grid;
+            gap: 2px;
+            background: transparent;
+        }
+
+        #popup-grid .cell {
+            cursor: default;
+        }
+
+        #popup-grid .cell.in-shape {
+            background-color: var(--shape-cell);
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+        
+        #popup-grid .cell.was-required {
+            background-color: var(--required-cell); /* Shows green in preview to confirm inclusion */
         }
     </style>
 </head>
 <body>
 
-    <div class="controls">
-        <label for="numSquares">Number of Squares (1-100):</label>
-        <input type="number" id="numSquares" min="1" max="100" value="10">
-        <button id="generateBtn">Generate Shape</button>
+    <div class="instructions">
+        <h3>How to use:</h3>
+        <p><strong>1 Click (Red):</strong> Excludes the number from the pool.</p>
+        <p><strong>2 Clicks (Green):</strong> Forces the number to be assigned to the generated shape.</p>
+        <p><strong>3 Clicks (White):</strong> Neutral number. Might be picked randomly.</p>
     </div>
 
-    <div id="grid"></div>
+    <div class="controls">
+        <div class="input-row">
+            <label for="numSquares">Total Tiles in Shape:</label>
+            <input type="number" id="numSquares" min="1" max="231" value="15">
+            <button id="generateBtn">Generate Shape</button>
+        </div>
+        <div class="legend">
+            <div class="legend-item"><div class="legend-box" style="background: var(--neutral-cell)"></div> Random</div>
+            <div class="legend-item"><div class="legend-box" style="background: var(--excluded-cell)"></div> Exclude</div>
+            <div class="legend-item"><div class="legend-box" style="background: var(--required-cell)"></div> Must Include</div>
+        </div>
+    </div>
+
+    <div id="main-grid"></div>
+
+    <div id="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <div id="popup-grid"></div>
+            <button id="downloadBtn" class="download-btn">Save as Image</button>
+        </div>
+    </div>
 
     <script>
         const COLS = 11;
         const ROWS = 21;
-        const gridElement = document.getElementById('grid');
+        const TOTAL_CELLS = COLS * ROWS;
+        const mainGrid = document.getElementById('main-grid');
+        const popupGrid = document.getElementById('popup-grid');
+        const modal = document.getElementById('modal');
 
-        // Initialize the grid layout
+        let tileStates = new Array(TOTAL_CELLS).fill(0);
+        
+        // This will hold the coordinate mapping for the download function
+        window.currentShapeData = null; 
+
+        // Initialize Main Grid (Number Picker Palette)
         function setupGrid() {
-            for (let i = 0; i < ROWS * COLS; i++) {
+            for (let i = 0; i < TOTAL_CELLS; i++) {
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
-                cell.id = `cell-${i}`;
-                gridElement.appendChild(cell);
+                cell.textContent = i + 1;
+                cell.dataset.index = i;
+                
+                cell.addEventListener('click', () => {
+                    let idx = parseInt(cell.dataset.index);
+                    tileStates[idx] = (tileStates[idx] + 1) % 3;
+                    
+                    cell.classList.remove('excluded', 'required');
+                    if (tileStates[idx] === 1) cell.classList.add('excluded');
+                    if (tileStates[idx] === 2) cell.classList.add('required');
+                });
+
+                mainGrid.appendChild(cell);
             }
         }
 
-        // Generate a random contiguous shape
         function generateShape() {
-            const inputVal = parseInt(document.getElementById('numSquares').value, 10);
+            const targetSize = parseInt(document.getElementById('numSquares').value, 10);
             
-            if (isNaN(inputVal) || inputVal < 1 || inputVal > 100) {
-                alert("Please enter a valid number between 1 and 100.");
-                return;
+            let reqNumbers = [];
+            let availableNumbers = [];
+
+            // Sort numbers (1-231) into their specific pools
+            for (let i = 0; i < TOTAL_CELLS; i++) {
+                let actualNumber = i + 1;
+                if (tileStates[i] === 2) {
+                    reqNumbers.push(actualNumber);
+                } else if (tileStates[i] === 0) {
+                    availableNumbers.push(actualNumber);
+                }
+                // Excluded (state === 1) are completely ignored.
             }
 
-            // Clear previous shape and old numbers
-            document.querySelectorAll('.cell').forEach(cell => {
-                cell.classList.remove('active');
-                cell.textContent = ''; 
-            });
+            // Input Validation
+            if (isNaN(targetSize) || targetSize < 1 || targetSize > 231) {
+                return alert("Please enter a valid shape size between 1 and 231.");
+            }
+            if (reqNumbers.length > targetSize) {
+                return alert(`You requested ${reqNumbers.length} "Must Include" tiles, but your shape size is only ${targetSize}. Increase the shape size.`);
+            }
+            if (targetSize > (reqNumbers.length + availableNumbers.length)) {
+                return alert("You excluded too many numbers! There aren't enough numbers left to fill a shape of that size.");
+            }
 
-            let shapeCoordinates;
-            let success = false;
+            // 1. Generate the free-floating contiguous shape coordinates
+            let shapeCoords = new Set(["0,0"]); // Start at origin
 
-            // Loop until a shape is successfully generated without getting trapped
-            while (!success) {
-                shapeCoordinates = new Set();
-                
-                // Pick a random starting point
-                let startR = Math.floor(Math.random() * ROWS);
-                let startC = Math.floor(Math.random() * COLS);
-                shapeCoordinates.add(`${startR},${startC}`);
+            while (shapeCoords.size < targetSize) {
+                let validNeighbors = new Set();
 
-                let trapped = false;
-
-                // Grow the shape until it reaches the requested size
-                for (let i = 1; i < inputVal; i++) {
-                    let validNeighbors = new Set();
-
-                    // Find all empty neighbors adjacent to the current shape
-                    shapeCoordinates.forEach(coord => {
-                        let [r, c] = coord.split(',').map(Number);
-                        const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]; // Up, Down, Left, Right
-
-                        for (let [dr, dc] of directions) {
-                            let nr = r + dr;
-                            let nc = c + dc;
-
-                            // Check if the neighbor is within grid bounds
-                            if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
-                                if (!shapeCoordinates.has(`${nr},${nc}`)) {
-                                    validNeighbors.add(`${nr},${nc}`);
-                                }
-                            }
+                // Find all empty neighbors touching the current shape
+                shapeCoords.forEach(coord => {
+                    let [r, c] = coord.split(',').map(Number);
+                    const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+                    
+                    for (let [dr, dc] of directions) {
+                        let nr = r + dr, nc = c + dc;
+                        let neighborStr = `${nr},${nc}`;
+                        if (!shapeCoords.has(neighborStr)) {
+                            validNeighbors.add(neighborStr);
                         }
-                    });
-
-                    let neighborsArray = Array.from(validNeighbors);
-
-                    // If there are no valid neighbors, the shape is trapped in a corner/loop
-                    if (neighborsArray.length === 0) {
-                        trapped = true;
-                        break;
                     }
+                });
 
-                    // Pick a random valid neighbor and add it to the shape
-                    let randomPick = neighborsArray[Math.floor(Math.random() * neighborsArray.length)];
-                    shapeCoordinates.add(randomPick);
-                }
+                // Pick a random valid neighbor to grow the shape
+                let neighborsArr = Array.from(validNeighbors);
+                let randomPick = neighborsArr[Math.floor(Math.random() * neighborsArr.length)];
+                shapeCoords.add(randomPick);
+            }
 
-                // If we didn't get trapped, exit the while loop
-                if (!trapped) {
-                    success = true;
+            // 2. Assign Numbers to the Generated Shape
+            let assignedData = [];
+            let numberPool = [...reqNumbers];
+            
+            // Get the remaining random numbers needed to fill the shape
+            let needed = targetSize - reqNumbers.length;
+            
+            // Shuffle available numbers and take what we need
+            let shuffledAvailable = [...availableNumbers].sort(() => 0.5 - Math.random());
+            numberPool.push(...shuffledAvailable.slice(0, needed));
+            
+            // Shuffle the final combined pool so required numbers aren't grouped together
+            numberPool.sort(() => 0.5 - Math.random());
+
+            let coordsArray = Array.from(shapeCoords);
+            coordsArray.forEach((coord, i) => {
+                let [r, c] = coord.split(',').map(Number);
+                assignedData.push({ r, c, num: numberPool[i] });
+            });
+
+            // 3. Find Bounding Box for the new shape
+            let minR = Math.min(...assignedData.map(d => d.r));
+            let maxR = Math.max(...assignedData.map(d => d.r));
+            let minC = Math.min(...assignedData.map(d => d.c));
+            let maxC = Math.max(...assignedData.map(d => d.c));
+
+            let rows = maxR - minR + 1;
+            let cols = maxC - minC + 1;
+
+            // Save data globally for the image download function
+            window.currentShapeData = { assignedData, minR, maxR, minC, maxC, rows, cols, reqNumbers };
+
+            // 4. Render Dynamic Popup Grid
+            popupGrid.innerHTML = '';
+            popupGrid.style.gridTemplateColumns = `repeat(${cols}, 35px)`;
+            popupGrid.style.gridTemplateRows = `repeat(${rows}, 35px)`;
+
+            // Create a lookup map for the rendering loop
+            let shapeMap = new Map();
+            assignedData.forEach(d => shapeMap.set(`${d.r - minR},${d.c - minC}`, d.num));
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    let cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    let key = `${r},${c}`;
+                    
+                    if (shapeMap.has(key)) {
+                        cell.classList.add('in-shape');
+                        let assignedNum = shapeMap.get(key);
+                        cell.textContent = assignedNum;
+                        
+                        // Show "Must Include" tiles as green in the preview to confirm it worked
+                        if (reqNumbers.includes(assignedNum)) {
+                            cell.classList.add('was-required');
+                        }
+                    } else {
+                        // Invisible placeholder blocks to maintain the shape's rigid grid
+                        cell.style.background = 'transparent';
+                        cell.style.border = 'none';
+                        cell.style.color = 'transparent';
+                    }
+                    popupGrid.appendChild(cell);
                 }
             }
 
-            // Render the final shape onto the grid and assign numbers
-            shapeCoordinates.forEach(coord => {
-                let [r, c] = coord.split(',').map(Number);
-                let index = r * COLS + c;
-                let cellElement = document.getElementById(`cell-${index}`);
-                
-                cellElement.classList.add('active');
-                
-                // Assign a random number 1-231
-                let randomNum = Math.floor(Math.random() * 231) + 1;
-                cellElement.textContent = randomNum;
-            });
+            modal.classList.add('show');
         }
 
-        // Setup the grid on page load
-        setupGrid();
+        // Custom function to draw the free-floating shape centered in a perfectly sized PNG
+        function downloadImage() {
+            if (!window.currentShapeData) return;
 
-        // Event Listeners
+            const { assignedData, minR, minC, maxR, maxC, rows, cols } = window.currentShapeData;
+
+            const TILE_SIZE = 40; 
+            const PADDING = 40; 
+
+            const canvas = document.createElement('canvas');
+            canvas.width = (cols * TILE_SIZE) + (PADDING * 2);
+            canvas.height = (rows * TILE_SIZE) + (PADDING * 2);
+            const ctx = canvas.getContext('2d');
+
+            // White Background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Styling for the black and white tiles
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2;
+            ctx.fillStyle = '#000000';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = 'bold 16px sans-serif';
+
+            // Draw the assigned tiles
+            assignedData.forEach(cell => {
+                // Subtracting minC/minR ensures the top-left of the shape sits at 0,0 (plus padding)
+                let x = PADDING + (cell.c - minC) * TILE_SIZE;
+                let y = PADDING + (cell.r - minR) * TILE_SIZE;
+
+                ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
+                ctx.fillText(cell.num, x + (TILE_SIZE / 2), y + (TILE_SIZE / 2));
+            });
+
+            // Create download link
+            const link = document.createElement('a');
+            link.download = 'generated-shape.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Setup & Event Listeners
+        setupGrid();
         document.getElementById('generateBtn').addEventListener('click', generateShape);
-        document.getElementById('numSquares').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') generateShape();
+        document.getElementById('downloadBtn').addEventListener('click', downloadImage);
+        document.getElementById('closeModal').addEventListener('click', () => modal.classList.remove('show'));
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('show');
         });
     </script>
 </body>
