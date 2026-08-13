@@ -1,0 +1,417 @@
+/* Nemesis Foundation Design System & Styles */
+
+:root {
+  --nemesis-black: #242424;
+  --nemesis-candlelight: #ffdc9a;
+  --nemesis-moonlight: #f5f1b9;
+  --nemesis-white: #FAF9ED;
+  --font-mono: 'HAL Timezone Mono', 'Courier New', monospace;
+  --font-sans: 'HAL Timezone Mono', 'Courier New', monospace;
+  --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@font-face {
+  font-family: 'HAL Timezone Mono';
+  src: url('fonts/HALTimezoneMono-Book.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  src: url('fonts/DMSans-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: var(--font-mono);
+  background-color: var(--nemesis-black);
+}
+
+/* First Row: Hero Header with Logo (1:1 Fluid Shrink on Scroll into Top Navbar) */
+.hero-section {
+  width: 100vw;
+  height: 380px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  background-color: var(--nemesis-black);
+  z-index: 1000;
+  /* box-shadow: 0 0 0 rgba(0, 0, 0, 0); */
+  will-change: height, box-shadow;
+}
+
+.hero-spacer {
+  width: 100vw;
+  height: 380px;
+}
+
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0 24px;
+}
+
+.logo-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  height: 100%;
+}
+
+picture.logo-picture,
+.logo-link picture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.logo {
+  max-width: 90vw;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  /* filter: drop-shadow(0px 8px 24px rgba(0, 0, 0, 0.4)); */
+  user-select: none;
+  will-change: width, max-height;
+}
+
+/* Second Row: Overlay & Description Section (2 Columns) */
+.overlay-section {
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--nemesis-candlelight);
+  z-index: 2;
+}
+
+.overlay-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  min-height: 480px;
+  align-items: stretch;
+}
+
+/* Column 1: Image Overlay & Background Texture */
+.overlay-column.image-column {
+  position: relative;
+  width: 100%;
+  min-height: 380px;
+  overflow: hidden;
+}
+
+.background-texture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-repeat: repeat;
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+}
+
+.overlay-image-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  margin: 0;
+  padding: 0;
+  mix-blend-mode: multiply;
+  /* Blends the artwork onto the yellow background & halftone texture */
+}
+
+/* Column 2: Description Text Section */
+.overlay-column.text-column.description-column {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6% 8%;
+}
+
+.text-content {
+  width: 100%;
+  max-width: 90%;
+  text-align: center;
+  font-family: var(--font-mono);
+  color: var(--nemesis-black);
+  font-size: clamp(0.85rem, 1.35vw, 1.4rem);
+  line-height: 1.65;
+  letter-spacing: 0.4px;
+}
+
+.text-content p {
+  margin-bottom: 1.2em;
+}
+
+.text-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Third Row: List of Grantees Section on Halftone Texture Background in Nemesis White */
+.grantees-section {
+  width: 100vw;
+  background-color: var(--nemesis-black);
+  color: var(--nemesis-white);
+  padding: 100px 8%;
+  font-family: var(--font-mono);
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.grantees-texture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-repeat: repeat;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.95;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.grantees-container {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.grantees-title {
+  font-family: var(--font-mono);
+  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+  text-align: center;
+  color: var(--nemesis-white);
+  /* border-bottom: 2px solid var(--nemesis-white); */
+  padding-bottom: 16px;
+}
+
+.grantees-accordions {
+  display: flex;
+  flex-direction: column;
+}
+
+.accordion-item {
+  border-bottom: 1.5px solid var(--nemesis-white);
+  background-color: transparent;
+  backdrop-filter: none;
+  transition: border-color 0.2s ease;
+}
+
+.accordion-item:first-child {
+  border-top: 1.5px solid var(--nemesis-white);
+}
+
+.accordion-item:hover {
+  background-color: transparent;
+}
+
+.accordion-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 16px;
+  background: transparent;
+  border: none;
+  color: var(--nemesis-white);
+  font-family: var(--font-mono);
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  letter-spacing: 1px;
+  cursor: pointer;
+  text-align: left;
+  user-select: none;
+}
+
+.year-label {
+  font-weight: 600;
+  color: var(--nemesis-white);
+}
+
+.accordion-icon {
+  font-size: 1.6rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--nemesis-white);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.accordion-item.active .accordion-icon {
+  transform: rotate(45deg);
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0 16px;
+}
+
+.grantees-list {
+  list-style-type: square;
+  padding-left: 20px;
+  padding-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: var(--nemesis-white);
+}
+
+.grantees-list li {
+  font-size: clamp(0.9rem, 1.15vw, 1.1rem);
+  line-height: 1.6;
+  letter-spacing: 0.3px;
+  color: var(--nemesis-white);
+}
+
+/* Fourth Row: Contact Section at Bottom in Nemesis Moonlight */
+.contact-section {
+  width: 100vw;
+  background-color: var(--nemesis-moonlight);
+  color: var(--nemesis-black);
+  padding: 90px 8%;
+  font-family: var(--font-mono);
+  position: relative;
+  z-index: 2;
+}
+
+.contact-container {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.contact-title {
+  font-family: var(--font-mono);
+  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 32px;
+  display: inline-block;
+  color: var(--nemesis-black);
+  border-bottom: 2px solid var(--nemesis-black);
+  padding-bottom: 12px;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  font-size: clamp(1rem, 1.3vw, 1.25rem);
+  letter-spacing: 0.5px;
+}
+
+.contact-line {
+  margin: 0;
+  color: var(--nemesis-black);
+}
+
+.contact-link {
+  color: var(--nemesis-black);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: opacity 0.2s ease;
+}
+
+.contact-link:hover {
+  opacity: 0.7;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 960px) {
+  .overlay-row {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .overlay-column.image-column {
+    height: 380px;
+    min-height: 320px;
+  }
+
+  .overlay-column.text-column.description-column {
+    padding: 50px 24px;
+  }
+
+  .grantees-section {
+    padding: 70px 5%;
+  }
+
+  .accordion-header {
+    padding: 18px 8px;
+  }
+
+  .accordion-content {
+    padding: 0 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    height: 260px;
+  }
+
+  .hero-spacer {
+    height: 260px;
+  }
+
+  .overlay-column.image-column {
+    height: 300px;
+  }
+}
