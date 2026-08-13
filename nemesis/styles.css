@@ -100,12 +100,12 @@ picture.logo-picture,
 
 .logo {
   max-width: 90vw;
-  width: auto;
+  max-height: 80%;
   height: auto;
   object-fit: contain;
-  /* filter: drop-shadow(0px 8px 24px rgba(0, 0, 0, 0.4)); */
   user-select: none;
-  will-change: width, max-height;
+  will-change: transform;
+  transform-origin: center center;
 }
 
 /* Second Row: Overlay & Description Section (2 Columns) */
