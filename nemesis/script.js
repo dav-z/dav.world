@@ -1,0 +1,107 @@
+/**
+ * Nemesis Foundation - Scripts
+ * - 1:1 Seamless Fluid Hero Logo Shrink on Scroll into Top Nav Bar
+ * - Expandable Grantees Accordion
+ */
+document.addEventListener('DOMContentLoaded', () => {
+  // --- 1. Hero Logo 1:1 Fluid Shrink on Scroll ---
+  const heroSection = document.getElementById('hero-section');
+  const heroSpacer = document.querySelector('.hero-spacer');
+  const logoWrapper = document.getElementById('logo-wrapper');
+  const logoImg = document.getElementById('hero-logo');
+
+  if (heroSection && heroSpacer && logoWrapper && logoImg) {
+    let ticking = false;
+
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(updateHero);
+        ticking = true;
+      }
+    }
+
+    function updateHero() {
+      const scrollY = Math.max(0, window.scrollY);
+      const windowWidth = window.innerWidth;
+      const isMobile = windowWidth <= 768;
+
+      const initialHeight = heroSpacer.offsetHeight || (isMobile ? 260 : 380);
+      const minHeight = isMobile ? 60 : 72;
+      const maxScroll = Math.max(1, initialHeight - minHeight);
+
+      // Clamp scroll progress between 0 and 1
+      const progress = Math.min(1, scrollY / maxScroll);
+
+      // Height shrinks seamlessly 1:1 with scroll position
+      const currentHeight = Math.max(minHeight, initialHeight - scrollY);
+      heroSection.style.height = `${currentHeight}px`;
+
+      // Calculate initial & target min logo width based on viewport
+      let initialLogoWidth, minLogoWidth;
+
+      if (windowWidth > 1024) {
+        initialLogoWidth = Math.min(1000, windowWidth * 0.85);
+        minLogoWidth = Math.min(520, windowWidth * 0.65);
+      } else if (windowWidth > 768) {
+        initialLogoWidth = Math.min(720, windowWidth * 0.85);
+        minLogoWidth = Math.min(420, windowWidth * 0.65);
+      } else {
+        initialLogoWidth = Math.min(340, windowWidth * 0.85);
+        minLogoWidth = Math.min(220, windowWidth * 0.65);
+      }
+
+      // Logo width shrinks smoothly and continuously 1:1 with scroll position
+      const currentLogoWidth = initialLogoWidth - progress * (initialLogoWidth - minLogoWidth);
+      logoImg.style.width = `${currentLogoWidth}px`;
+      logoImg.style.maxHeight = `${Math.max(28, currentHeight - 16)}px`;
+
+      // Apply subtle navbar shadow and border when fully docked at top
+      if (progress > 0.05) {
+        const shadowAlpha = Math.min(0.5, progress * 0.5);
+        const borderAlpha = Math.min(0.12, progress * 0.12);
+        heroSection.style.boxShadow = `0 4px 20px rgba(0, 0, 0, ${shadowAlpha.toFixed(2)})`;
+        heroSection.style.borderBottom = `1px solid rgba(255, 255, 255, ${borderAlpha.toFixed(2)})`;
+      } else {
+        heroSection.style.boxShadow = 'none';
+        heroSection.style.borderBottom = 'none';
+      }
+
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', updateHero, { passive: true });
+    updateHero(); // Initial run
+  }
+
+  // --- 2. Single-Expandable Grantees Accordion ---
+  document.addEventListener('click', (e) => {
+    const header = e.target.closest('.accordion-header');
+    if (!header) return;
+
+    const currentItem = header.closest('.accordion-item');
+    if (!currentItem) return;
+
+    const currentContent = currentItem.querySelector('.accordion-content');
+    const isCurrentlyExpanded = currentItem.classList.contains('active');
+
+    // Close all accordion items across the grantees list
+    const container = currentItem.closest('.grantees-accordions') || document;
+    const allItems = container.querySelectorAll('.accordion-item');
+
+    allItems.forEach(item => {
+      item.classList.remove('active');
+      const h = item.querySelector('.accordion-header');
+      if (h) h.setAttribute('aria-expanded', 'false');
+      const c = item.querySelector('.accordion-content');
+      if (c) c.style.maxHeight = '0px';
+    });
+
+    // If the clicked item was not previously expanded, open it now
+    if (!isCurrentlyExpanded && currentContent) {
+      currentItem.classList.add('active');
+      header.setAttribute('aria-expanded', 'true');
+      currentContent.style.maxHeight = `${currentContent.scrollHeight + 32}px`;
+    }
+  });
+});
