@@ -17,12 +17,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let maxScroll = 308;
     let initialLogoWidth = 1000;
     let minLogoWidth = 520;
+    let lastWindowWidth = 0;
 
     function recalculateDimensions() {
       const windowWidth = window.innerWidth;
+
+      // Ignore vertical-only height changes (e.g. mobile URL bar collapsing during scroll)
+      if (windowWidth === lastWindowWidth && initialHeight > 0 && window.scrollY > 0) {
+        return;
+      }
+      lastWindowWidth = windowWidth;
+
       const isMobile = windowWidth <= 768;
 
-      initialHeight = heroSpacer.offsetHeight || (isMobile ? 260 : 380);
+      initialHeight = (window.scrollY === 0 && heroSpacer.offsetHeight) ? heroSpacer.offsetHeight : (isMobile ? 260 : 380);
       minHeight = isMobile ? 60 : 72;
       maxScroll = Math.max(1, initialHeight - minHeight);
 
@@ -33,9 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
         initialLogoWidth = Math.min(720, windowWidth * 0.85);
         minLogoWidth = Math.min(420, windowWidth * 0.65);
       } else {
-        initialLogoWidth = Math.min(340, windowWidth * 0.85);
-        minLogoWidth = Math.min(220, windowWidth * 0.65);
+        initialLogoWidth = Math.min(320, windowWidth * 0.85);
+        minLogoWidth = Math.min(200, windowWidth * 0.60);
       }
+
+      // Set base logo width once on load/resize so scale transform animates without layout reflows
+      logoImg.style.width = `${initialLogoWidth}px`;
     }
 
     function onScroll() {
@@ -55,10 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentHeight = Math.max(minHeight, initialHeight - scrollY);
       heroSection.style.height = `${currentHeight}px`;
 
-      // Logo width shrinks smoothly and continuously 1:1 with scroll position
-      const currentLogoWidth = initialLogoWidth - progress * (initialLogoWidth - minLogoWidth);
-      logoImg.style.width = `${currentLogoWidth}px`;
-      logoImg.style.maxHeight = `${Math.max(28, currentHeight - 16)}px`;
+      // Scale logo smoothly using GPU compositor transform (0 DOM reflows)
+      const targetScale = minLogoWidth / initialLogoWidth;
+      const currentScale = 1 - progress * (1 - targetScale);
+      logoImg.style.transform = `scale(${currentScale.toFixed(4)}) translateZ(0)`;
 
       // Apply subtle navbar shadow and border when fully docked at top
       if (progress > 0.05) {
