@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Nemesis Foundation">
+    <title>Nemesis Foundation</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+
+    <!-- First Row: Centered Hero Logo that shrinks into Fixed Nav Bar -->
+    <header class="hero-section" id="hero-section">
+        <div class="logo-wrapper" id="logo-wrapper">
+            <a href="#" class="logo-link">
+                <picture id="hero-logo-picture">
+                    <source media="(min-width: 1025px)" srcset="logo/nemesis-foundation-logo-w_o-L.svg">
+                    <source media="(min-width: 769px)" srcset="logo/nemesis-foundation-logo-w_o-M.svg">
+                    <img src="logo/nemesis-foundation-logo-w_o-S.svg" alt="Nemesis Foundation Logo" class="logo" id="hero-logo">
+                </picture>
+            </a>
+        </div>
+    </header>
+
+    <!-- Spacer behind fixed header -->
+    <div class="hero-spacer"></div>
+
+    <!-- Second Row: Candlelight Row - 2 Columns (Column 1: Imagery, Column 2: Centered Description) -->
+    <main>
+        <section class="overlay-section" id="description-section">
+            <div class="overlay-row">
+                <!-- Column 1: Image & Texture Overlay -->
+                <div class="overlay-column image-column">
+                    <div class="background-texture"
+                        style="background-image: url('textures/nemesis-foundation-halftone-A-02.svg');"></div>
+                    <div class="overlay-image-wrapper">
+                        <img src="imagery/nemesis-foundation-image-04.svg" alt="Nemesis Foundation Overlay Image"
+                            class="overlay-image">
+                    </div>
+                </div>
+                <!-- Column 2: Centered Description Text -->
+                <div class="overlay-column text-column description-column">
+                    <div class="text-content">
+                        <p>Nemesis is a private non-profit organization protecting artists and ideas that advance
+                            psycho-spiritual exploration and cultural imagination; standing firmly behind those who
+                            bring beauty and meaning to the world.</p>
+                        <p>Through philanthropic investment, Nemesis helps cultivate conditions for transformative
+                            creative work to flourish, thereby encouraging new ways of seeing to emerge.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Third Row: List of Grantees on Halftone Texture Background in Nemesis White -->
+        <section class="grantees-section" id="grantees-section">
+            <div class="grantees-texture"
+                style="background-image: url('textures/nemesis-foundation-halftone-A-08.svg');"></div>
+            <div class="grantees-container">
+                <h2 class="grantees-title">List of Grantees</h2>
+
+                <div class="grantees-accordions">
+                    <!-- Year 2025 Accordion -->
+                    <div class="accordion-item">
+                        <button class="accordion-header" aria-expanded="false" aria-controls="grantees-2025">
+                            <span class="year-label">2025</span>
+                            <span class="accordion-icon">+</span>
+                        </button>
+                        <div class="accordion-content" id="grantees-2025">
+                            <ul class="grantees-list">
+                                <li>Artists Space</li>
+                                <li>Community Leaders Resiliency Fund (Oregon Psilocybin)</li>
+                                <li>Drawing Center</li>
+                                <li>Free Arts NYC</li>
+                                <li>Guggenheim</li>
+                                <li>Healing Advocacy Fund</li>
+                                <li>Indigenous Medicine Conservation Fund</li>
+                                <li>Land Studio &amp; Gallery</li>
+                                <li>Love Serve Remember Foundation</li>
+                                <li>MoMA</li>
+                                <li>MoMA PS1</li>
+                                <li>N+1</li>
+                                <li>Pioneer Works Art Foundation</li>
+                                <li>The Netherland-America Foundation, Inc.</li>
+                                <li>White Columns</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Year 2024 Accordion -->
+                    <div class="accordion-item">
+                        <button class="accordion-header" aria-expanded="false" aria-controls="grantees-2024">
+                            <span class="year-label">2024</span>
+                            <span class="accordion-icon">+</span>
+                        </button>
+                        <div class="accordion-content" id="grantees-2024">
+                            <ul class="grantees-list">
+                                <li>Community Leaders Resiliency Fund (Oregon Psilocybin)</li>
+                                <li>Council For Native Hawaiian Advancement</li>
+                                <li>Fireside</li>
+                                <li>GHB Cluster Headache Trial</li>
+                                <li>Hawaiian Natives Peyote Ceremony</li>
+                                <li>Healing Advocacy Fund</li>
+                                <li>How to Die (Psilocybin Hospice Doc)</li>
+                                <li>Indigenous Artists &amp; Coca Assessment</li>
+                                <li>Lalakea Foundation</li>
+                                <li>Love Serve Remember Foundation</li>
+                                <li>LSU Anti-Inflammation Research</li>
+                                <li>N+1</li>
+                                <li>Pioneer Works Art Foundation</li>
+                                <li>Poi Foundation</li>
+                                <li>Urban Indigenous Collective NY</li>
+                                <li>Waipa Foundation</li>
+                                <li>White Columns</li>
+                                <li>World Health Organization Coca Leaf Advocacy</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fourth Row: Contact Section at the Bottom in Nemesis Moonlight -->
+        <section class="contact-section" id="contact-section">
+            <div class="contact-container">
+                <h2 class="contact-title">Contact</h2>
+                <div class="contact-info">
+                    <p class="contact-line">Email: <a href="mailto:david@nmsfnd.org" class="contact-link">david@nmsfnd.org</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+</body>
+
+</html>
