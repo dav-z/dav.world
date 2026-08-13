@@ -1,0 +1,16 @@
+{
+  "hero": {
+    "logoSrc": "logo/nemesis-foundation-logo-w_o-L.svg",
+    "alt": "Nemesis Foundation Logo"
+  },
+  "overlaySections": [
+    {
+      "id": "overlay-1",
+      "title": "Nemesis Foundation Overlay",
+      "backgroundTexture": "textures/nemesis-foundation-halftone-A-02.svg",
+      "foregroundImage": "imagery/nemesis-foundation-image-04.svg",
+      "alt": "Nemesis Foundation Image Overlay",
+      "text": "Nemesis is a private non-profit organization protecting artists and ideas that advance psycho-spiritual exploration and cultural imagination; standing firmly behind those who bring beauty and meaning to the world.\n\nThrough philanthropic investment, Nemesis helps cultivate conditions for transformative creative work to flourish, thereby encouraging new ways of seeing to emerge."
+    }
+  ]
+}
