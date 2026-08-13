@@ -12,32 +12,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (heroSection && heroSpacer && logoWrapper && logoImg) {
     let ticking = false;
+    let initialHeight = 380;
+    let minHeight = 72;
+    let maxScroll = 308;
+    let initialLogoWidth = 1000;
+    let minLogoWidth = 520;
 
-    function onScroll() {
-      if (!ticking) {
-        requestAnimationFrame(updateHero);
-        ticking = true;
-      }
-    }
-
-    function updateHero() {
-      const scrollY = Math.max(0, window.scrollY);
+    function recalculateDimensions() {
       const windowWidth = window.innerWidth;
       const isMobile = windowWidth <= 768;
 
-      const initialHeight = heroSpacer.offsetHeight || (isMobile ? 260 : 380);
-      const minHeight = isMobile ? 60 : 72;
-      const maxScroll = Math.max(1, initialHeight - minHeight);
-
-      // Clamp scroll progress between 0 and 1
-      const progress = Math.min(1, scrollY / maxScroll);
-
-      // Height shrinks seamlessly 1:1 with scroll position
-      const currentHeight = Math.max(minHeight, initialHeight - scrollY);
-      heroSection.style.height = `${currentHeight}px`;
-
-      // Calculate initial & target min logo width based on viewport
-      let initialLogoWidth, minLogoWidth;
+      initialHeight = heroSpacer.offsetHeight || (isMobile ? 260 : 380);
+      minHeight = isMobile ? 60 : 72;
+      maxScroll = Math.max(1, initialHeight - minHeight);
 
       if (windowWidth > 1024) {
         initialLogoWidth = Math.min(1000, windowWidth * 0.85);
@@ -49,6 +36,24 @@ document.addEventListener('DOMContentLoaded', () => {
         initialLogoWidth = Math.min(340, windowWidth * 0.85);
         minLogoWidth = Math.min(220, windowWidth * 0.65);
       }
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(updateHero);
+        ticking = true;
+      }
+    }
+
+    function updateHero() {
+      const scrollY = Math.max(0, window.scrollY || window.pageYOffset || 0);
+
+      // Clamp scroll progress between 0 and 1
+      const progress = Math.min(1, scrollY / maxScroll);
+
+      // Height shrinks seamlessly 1:1 with scroll position
+      const currentHeight = Math.max(minHeight, initialHeight - scrollY);
+      heroSection.style.height = `${currentHeight}px`;
 
       // Logo width shrinks smoothly and continuously 1:1 with scroll position
       const currentLogoWidth = initialLogoWidth - progress * (initialLogoWidth - minLogoWidth);
@@ -69,9 +74,20 @@ document.addEventListener('DOMContentLoaded', () => {
       ticking = false;
     }
 
+    recalculateDimensions();
+    updateHero();
+
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', updateHero, { passive: true });
-    updateHero(); // Initial run
+    window.addEventListener('resize', () => {
+      recalculateDimensions();
+      updateHero();
+    }, { passive: true });
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => {
+        recalculateDimensions();
+        updateHero();
+      }, 100);
+    });
   }
 
   // --- 2. Single-Expandable Grantees Accordion ---
