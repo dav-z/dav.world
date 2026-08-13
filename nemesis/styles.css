@@ -20,7 +20,7 @@
 @font-face {
   font-family: 'DM Sans';
   src: url('fonts/DMSans-Medium.ttf') format('truetype');
-  font-weight: 500;
+  font-weight: normal;
   font-style: normal;
 }
 
@@ -278,13 +278,13 @@ picture.logo-picture,
 }
 
 .year-label {
-  font-weight: 600;
+  font-weight: normal;
   color: var(--nemesis-white);
 }
 
 .accordion-icon {
   font-size: 1.6rem;
-  font-weight: 300;
+  font-weight: normal;
   line-height: 1;
   color: var(--nemesis-white);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
