@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const isMobile = windowWidth <= 768;
 
-      initialHeight = (window.scrollY === 0 && heroSpacer.offsetHeight) ? heroSpacer.offsetHeight : (isMobile ? 260 : 380);
+      initialHeight = isMobile ? 220 : (windowWidth > 1024 ? 380 : 300);
       minHeight = isMobile ? 60 : 72;
       maxScroll = Math.max(1, initialHeight - minHeight);
 
@@ -41,8 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
         initialLogoWidth = Math.min(720, windowWidth * 0.85);
         minLogoWidth = Math.min(420, windowWidth * 0.65);
       } else {
-        initialLogoWidth = Math.min(320, windowWidth * 0.85);
-        minLogoWidth = Math.min(200, windowWidth * 0.60);
+        initialLogoWidth = Math.min(300, windowWidth * 0.85);
+        minLogoWidth = Math.min(180, windowWidth * 0.55);
+      }
+
+      if (heroSpacer) {
+        heroSpacer.style.height = `${initialHeight}px`;
       }
 
       // Set base logo width once on load/resize so scale transform animates without layout reflows
