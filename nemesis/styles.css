@@ -61,7 +61,6 @@ textarea {
   overflow: hidden;
   background-color: var(--nemesis-black);
   z-index: 1000;
-  /* box-shadow: 0 0 0 rgba(0, 0, 0, 0); */
   will-change: height, box-shadow;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
@@ -104,8 +103,9 @@ picture.logo-picture,
   height: auto;
   object-fit: contain;
   user-select: none;
-  will-change: transform;
   transform-origin: center center;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /* Second Row: Overlay & Description Section (2 Columns) */
@@ -407,6 +407,16 @@ picture.logo-picture,
   }
 }
 
+@media (max-width: 1024px) {
+  .hero-section {
+    height: 300px;
+  }
+
+  .hero-spacer {
+    height: 300px;
+  }
+}
+
 @media (max-width: 768px) {
   .hero-section {
     position: fixed;
@@ -416,7 +426,6 @@ picture.logo-picture,
     height: 220px;
     padding: 0;
     z-index: 1000;
-    will-change: height, box-shadow;
   }
 
   .hero-spacer {
@@ -430,10 +439,6 @@ picture.logo-picture,
     max-height: 80%;
     width: auto;
     height: auto;
-    will-change: transform;
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
   }
 
   .overlay-column.image-column {
