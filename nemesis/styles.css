@@ -409,11 +409,31 @@ picture.logo-picture,
 
 @media (max-width: 768px) {
   .hero-section {
-    height: 260px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 220px;
+    padding: 0;
+    z-index: 1000;
+    will-change: height, box-shadow;
   }
 
   .hero-spacer {
-    height: 260px;
+    display: block;
+    width: 100%;
+    height: 220px;
+  }
+
+  .logo {
+    max-width: 85vw;
+    max-height: 80%;
+    width: auto;
+    height: auto;
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   .overlay-column.image-column {
