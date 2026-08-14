@@ -7,56 +7,43 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- 1. Hero Logo 1:1 Fluid Shrink on Scroll ---
   const heroSection = document.getElementById('hero-section');
   const heroSpacer = document.querySelector('.hero-spacer');
-  const logoWrapper = document.getElementById('logo-wrapper');
   const logoImg = document.getElementById('hero-logo');
 
-  if (heroSection && heroSpacer && logoWrapper && logoImg) {
+  if (heroSection && logoImg) {
     let ticking = false;
     let initialHeight = 380;
     let minHeight = 72;
     let maxScroll = 308;
-    let initialLogoWidth = 1000;
-    let minLogoWidth = 520;
+    let targetMinScale = 0.62;
     let lastWindowWidth = 0;
 
     function recalculateDimensions() {
       const windowWidth = window.innerWidth;
 
-      // Ignore vertical-only height changes (e.g. mobile URL bar collapsing during scroll)
-      if (windowWidth === lastWindowWidth && initialHeight > 0 && window.scrollY > 0) {
+      // Ignore vertical-only height changes (e.g. mobile Safari URL bar collapsing during scroll)
+      if (windowWidth === lastWindowWidth && lastWindowWidth > 0) {
         return;
       }
       lastWindowWidth = windowWidth;
 
-      const isMobile = windowWidth <= 768;
-
-      initialHeight = isMobile ? 220 : (windowWidth > 1024 ? 380 : 300);
-      minHeight = isMobile ? 60 : 72;
-      maxScroll = Math.max(1, initialHeight - minHeight);
-
       if (windowWidth > 1024) {
-        initialLogoWidth = Math.min(1000, windowWidth * 0.85);
-        minLogoWidth = Math.min(520, windowWidth * 0.65);
+        initialHeight = 380;
+        minHeight = 72;
+        targetMinScale = 0.65;
       } else if (windowWidth > 768) {
-        initialLogoWidth = Math.min(720, windowWidth * 0.85);
-        minLogoWidth = Math.min(420, windowWidth * 0.65);
+        initialHeight = 300;
+        minHeight = 72;
+        targetMinScale = 0.62;
       } else {
-        initialLogoWidth = Math.min(300, windowWidth * 0.85);
-        minLogoWidth = Math.min(180, windowWidth * 0.55);
+        initialHeight = 220;
+        minHeight = 60;
+        targetMinScale = 0.60;
       }
+
+      maxScroll = Math.max(1, initialHeight - minHeight);
 
       if (heroSpacer) {
         heroSpacer.style.height = `${initialHeight}px`;
-      }
-
-      // Set base logo width once on load/resize so scale transform animates without layout reflows
-      logoImg.style.width = `${initialLogoWidth}px`;
-    }
-
-    function onScroll() {
-      if (!ticking) {
-        requestAnimationFrame(updateHero);
-        ticking = true;
       }
     }
 
@@ -67,26 +54,32 @@ document.addEventListener('DOMContentLoaded', () => {
       const progress = Math.min(1, scrollY / maxScroll);
 
       // Height shrinks seamlessly 1:1 with scroll position
-      const currentHeight = Math.max(minHeight, initialHeight - scrollY);
-      heroSection.style.height = `${currentHeight}px`;
+      const currentHeight = initialHeight - progress * (initialHeight - minHeight);
+      heroSection.style.height = `${currentHeight.toFixed(1)}px`;
 
       // Scale logo smoothly using GPU compositor transform (0 DOM reflows)
-      const targetScale = minLogoWidth / initialLogoWidth;
-      const currentScale = 1 - progress * (1 - targetScale);
+      const currentScale = 1 - progress * (1 - targetMinScale);
       logoImg.style.transform = `scale(${currentScale.toFixed(4)}) translateZ(0)`;
 
-      // Apply subtle navbar shadow and border when fully docked at top
-      if (progress > 0.05) {
-        const shadowAlpha = Math.min(0.5, progress * 0.5);
-        const borderAlpha = Math.min(0.12, progress * 0.12);
-        heroSection.style.boxShadow = `0 4px 20px rgba(0, 0, 0, ${shadowAlpha.toFixed(2)})`;
-        heroSection.style.borderBottom = `1px solid rgba(255, 255, 255, ${borderAlpha.toFixed(2)})`;
+      // Apply subtle navbar shadow and border when scrolled
+      if (progress > 0.01) {
+        const shadowAlpha = (progress * 0.5).toFixed(2);
+        const borderAlpha = (progress * 0.12).toFixed(2);
+        heroSection.style.boxShadow = `0 4px 20px rgba(0, 0, 0, ${shadowAlpha})`;
+        heroSection.style.borderBottom = `1px solid rgba(255, 255, 255, ${borderAlpha})`;
       } else {
         heroSection.style.boxShadow = 'none';
         heroSection.style.borderBottom = 'none';
       }
 
       ticking = false;
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(updateHero);
+        ticking = true;
+      }
     }
 
     recalculateDimensions();
@@ -97,12 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
       recalculateDimensions();
       updateHero();
     }, { passive: true });
-    window.addEventListener('orientationchange', () => {
-      setTimeout(() => {
-        recalculateDimensions();
-        updateHero();
-      }, 100);
-    });
   }
 
   // --- 2. Single-Expandable Grantees Accordion ---
