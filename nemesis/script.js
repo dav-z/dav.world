@@ -10,12 +10,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const logoImg = document.getElementById('hero-logo');
 
   if (heroSection && logoImg) {
+    // If native CSS scroll-driven animations are supported, let CSS GPU compositor handle it with 0 JS overhead
+    if (window.CSS && CSS.supports && CSS.supports('animation-timeline', 'scroll()')) {
+      return;
+    }
+
     let ticking = false;
     let initialHeight = 380;
     let minHeight = 72;
     let maxScroll = 308;
     let targetMinScale = 0.62;
     let lastWindowWidth = 0;
+
+    let targetScrollY = 0;
+    let currentScrollY = 0;
 
     function recalculateDimensions() {
       const windowWidth = window.innerWidth;
@@ -47,11 +55,19 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    function updateHero() {
-      const scrollY = Math.max(0, window.scrollY || window.pageYOffset || 0);
+    function render() {
+      targetScrollY = Math.max(0, window.scrollY || window.pageYOffset || 0);
+
+      // Smooth Lerp dampening (absorbs fast scroll momentum spikes)
+      const diff = targetScrollY - currentScrollY;
+      if (Math.abs(diff) < 0.1) {
+        currentScrollY = targetScrollY;
+      } else {
+        currentScrollY += diff * 0.35;
+      }
 
       // Clamp scroll progress between 0 and 1
-      const progress = Math.min(1, scrollY / maxScroll);
+      const progress = Math.min(1, Math.max(0, currentScrollY / maxScroll));
 
       // Height shrinks seamlessly 1:1 with scroll position
       const currentHeight = initialHeight - progress * (initialHeight - minHeight);
@@ -72,23 +88,32 @@ document.addEventListener('DOMContentLoaded', () => {
         heroSection.style.borderBottom = 'none';
       }
 
-      ticking = false;
+      // Continue animating until currentScrollY catches up with targetScrollY
+      if (Math.abs(targetScrollY - currentScrollY) > 0.1) {
+        requestAnimationFrame(render);
+      } else {
+        ticking = false;
+      }
     }
 
     function onScroll() {
       if (!ticking) {
-        requestAnimationFrame(updateHero);
         ticking = true;
+        requestAnimationFrame(render);
       }
     }
 
     recalculateDimensions();
-    updateHero();
+    currentScrollY = Math.max(0, window.scrollY || window.pageYOffset || 0);
+    render();
 
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', () => {
       recalculateDimensions();
-      updateHero();
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(render);
+      }
     }, { passive: true });
   }
 
