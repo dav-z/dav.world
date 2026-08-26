@@ -4,13 +4,13 @@
  * - Expandable Grantees Accordion
  */
 document.addEventListener('DOMContentLoaded', () => {
-  // --- 1. Hero Logo 1:1 Fluid Shrink on Scroll ---
+  // --- 1. Hero Logo Scroll Behavior (Hardware CSS Timeline + Universal Fluid JS Fallback) ---
   const heroSection = document.getElementById('hero-section');
   const heroSpacer = document.querySelector('.hero-spacer');
   const logoImg = document.getElementById('hero-logo');
 
   if (heroSection && logoImg) {
-    // If native CSS scroll-driven animations are supported, let CSS GPU compositor handle it with 0 JS overhead
+    // If native CSS scroll-driven animations are supported, let browser compositor handle it with 0 JS
     if (window.CSS && CSS.supports && CSS.supports('animation-timeline', 'scroll()')) {
       return;
     }
@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let initialHeight = 380;
     let minHeight = 72;
     let maxScroll = 308;
-    let targetMinScale = 0.62;
+    let targetMinScale = 0.65;
+    let isMobile = false;
     let lastWindowWidth = 0;
 
     let targetScrollY = 0;
@@ -34,21 +35,25 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       lastWindowWidth = windowWidth;
 
-      if (windowWidth > 1024) {
-        initialHeight = 380;
-        minHeight = 72;
-        targetMinScale = 0.65;
-      } else if (windowWidth > 768) {
+      if (windowWidth <= 768) {
+        isMobile = true;
+        initialHeight = 220;
+        minHeight = 64;
+        maxScroll = 156;
+        targetMinScale = 1; // Logo does not scale on mobile
+      } else if (windowWidth <= 1024) {
+        isMobile = false;
         initialHeight = 300;
         minHeight = 72;
+        maxScroll = 228;
         targetMinScale = 0.62;
       } else {
-        initialHeight = 220;
-        minHeight = 60;
-        targetMinScale = 0.60;
+        isMobile = false;
+        initialHeight = 380;
+        minHeight = 72;
+        maxScroll = 308;
+        targetMinScale = 0.65;
       }
-
-      maxScroll = Math.max(1, initialHeight - minHeight);
 
       if (heroSpacer) {
         heroSpacer.style.height = `${initialHeight}px`;
@@ -73,9 +78,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentHeight = initialHeight - progress * (initialHeight - minHeight);
       heroSection.style.height = `${currentHeight.toFixed(1)}px`;
 
-      // Scale logo smoothly using GPU compositor transform (0 DOM reflows)
-      const currentScale = 1 - progress * (1 - targetMinScale);
-      logoImg.style.transform = `scale(${currentScale.toFixed(4)}) translateZ(0)`;
+      // Scale logo smoothly using GPU compositor transform on desktop, keep 100% fixed on mobile
+      if (!isMobile) {
+        const currentScale = 1 - progress * (1 - targetMinScale);
+        logoImg.style.transform = `scale(${currentScale.toFixed(4)}) translateZ(0)`;
+      } else {
+        logoImg.style.transform = 'none';
+      }
 
       // Apply subtle navbar shadow and border when scrolled
       if (progress > 0.01) {
