@@ -5,12 +5,14 @@
  */
 document.addEventListener('DOMContentLoaded', () => {
   // --- 1. Hero Logo Scroll Behavior (Hardware CSS Timeline + Universal Fluid JS Fallback) ---
-  const heroSection = document.getElementById('hero-section');
-  const heroSpacer = document.querySelector('.hero-spacer');
-  const logoImg = document.getElementById('hero-logo');
+  function initHeroScroll() {
+    const heroSection = document.getElementById('hero-section');
+    const heroSpacer = document.querySelector('.hero-spacer');
+    const logoImg = document.getElementById('hero-logo');
 
-  if (heroSection && logoImg) {
-    // If native CSS scroll-driven animations are supported, let browser compositor handle it with 0 JS
+    if (!heroSection || !logoImg) return;
+
+    // If native CSS scroll-driven animations are supported on desktop/tablet, let browser compositor handle it with 0 JS
     if (window.CSS && CSS.supports && CSS.supports('animation-timeline', 'scroll()')) {
       return;
     }
@@ -136,6 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, { passive: true });
   }
+
+  initHeroScroll();
 
   // --- 2. Single-Expandable Grantees Accordion ---
   document.addEventListener('click', (e) => {
