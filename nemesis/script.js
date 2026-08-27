@@ -37,23 +37,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (windowWidth <= 768) {
         isMobile = true;
-        initialHeight = 220;
-        minHeight = 64;
-        maxScroll = 156;
-        targetMinScale = 1; // Logo does not scale on mobile
-      } else if (windowWidth <= 1024) {
-        isMobile = false;
+        heroSection.style.height = '';
+        heroSection.style.boxShadow = '';
+        heroSection.style.borderBottom = '';
+        logoImg.style.transform = '';
+        if (heroSpacer) {
+          heroSpacer.style.height = '';
+        }
+        return;
+      }
+
+      isMobile = false;
+      if (windowWidth <= 1024) {
         initialHeight = 300;
         minHeight = 72;
         maxScroll = 228;
         targetMinScale = 0.62;
       } else {
-        isMobile = false;
         initialHeight = 380;
         minHeight = 72;
         maxScroll = 308;
         targetMinScale = 0.65;
       }
+
+      maxScroll = Math.max(1, initialHeight - minHeight);
 
       if (heroSpacer) {
         heroSpacer.style.height = `${initialHeight}px`;
@@ -61,6 +68,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function render() {
+      if (isMobile || window.innerWidth <= 768) {
+        ticking = false;
+        return;
+      }
+
       targetScrollY = Math.max(0, window.scrollY || window.pageYOffset || 0);
 
       // Smooth Lerp dampening (absorbs fast scroll momentum spikes)
@@ -78,13 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentHeight = initialHeight - progress * (initialHeight - minHeight);
       heroSection.style.height = `${currentHeight.toFixed(1)}px`;
 
-      // Scale logo smoothly using GPU compositor transform on desktop, keep 100% fixed on mobile
-      if (!isMobile) {
-        const currentScale = 1 - progress * (1 - targetMinScale);
-        logoImg.style.transform = `scale(${currentScale.toFixed(4)}) translateZ(0)`;
-      } else {
-        logoImg.style.transform = 'none';
-      }
+      // Scale logo smoothly using GPU compositor transform on desktop
+      const currentScale = 1 - progress * (1 - targetMinScale);
+      logoImg.style.transform = `scale(${currentScale.toFixed(4)}) translateZ(0)`;
 
       // Apply subtle navbar shadow and border when scrolled
       if (progress > 0.01) {
@@ -106,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function onScroll() {
+      if (isMobile || window.innerWidth <= 768) return;
       if (!ticking) {
         ticking = true;
         requestAnimationFrame(render);
@@ -114,12 +123,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     recalculateDimensions();
     currentScrollY = Math.max(0, window.scrollY || window.pageYOffset || 0);
-    render();
+    if (!isMobile) {
+      render();
+    }
 
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', () => {
       recalculateDimensions();
-      if (!ticking) {
+      if (!isMobile && !ticking) {
         ticking = true;
         requestAnimationFrame(render);
       }
