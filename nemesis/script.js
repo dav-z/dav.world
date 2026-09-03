@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initHeroScroll();
 
-  // --- 2. Single-Expandable Grantees Accordion ---
+  // --- 2. Expandable Top-Level Dropdowns & Sub-Accordions ---
   document.addEventListener('click', (e) => {
     const header = e.target.closest('.accordion-header');
     if (!header) return;
@@ -149,26 +149,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentItem = header.closest('.accordion-item');
     if (!currentItem) return;
 
-    const currentContent = currentItem.querySelector('.accordion-content');
+    const currentContent = currentItem.querySelector(':scope > .accordion-content');
+    if (!currentContent) return;
+
     const isCurrentlyExpanded = currentItem.classList.contains('active');
 
-    // Close all accordion items across the grantees list
-    const container = currentItem.closest('.grantees-accordions') || document;
-    const allItems = container.querySelectorAll('.accordion-item');
+    // Case A: Top-level dropdown items ("List of Grantees" or "Contact")
+    if (currentItem.classList.contains('top-level-item')) {
+      if (isCurrentlyExpanded) {
+        // Collapse top-level item
+        currentContent.style.maxHeight = `${currentContent.scrollHeight}px`;
+        // Force reflow
+        void currentContent.offsetHeight;
+        currentContent.style.maxHeight = '0px';
+        currentItem.classList.remove('active');
+        header.setAttribute('aria-expanded', 'false');
+      } else {
+        // Expand top-level item
+        currentItem.classList.add('active');
+        header.setAttribute('aria-expanded', 'true');
+        currentContent.style.maxHeight = `${currentContent.scrollHeight + 32}px`;
+        
+        // After opening animation, allow unbounded height for nested sub-accordions
+        setTimeout(() => {
+          if (currentItem.classList.contains('active')) {
+            currentContent.style.maxHeight = 'none';
+          }
+        }, 400);
+      }
+      return;
+    }
 
-    allItems.forEach(item => {
-      item.classList.remove('active');
-      const h = item.querySelector('.accordion-header');
-      if (h) h.setAttribute('aria-expanded', 'false');
-      const c = item.querySelector('.accordion-content');
-      if (c) c.style.maxHeight = '0px';
-    });
+    // Case B: Sub-level accordion items (e.g. 2025, 2024 inside Grantees)
+    if (currentItem.classList.contains('sub-item')) {
+      const subContainer = currentItem.closest('.grantees-sub-accordions');
+      const allSubItems = subContainer ? subContainer.querySelectorAll('.sub-item') : [];
 
-    // If the clicked item was not previously expanded, open it now
-    if (!isCurrentlyExpanded && currentContent) {
-      currentItem.classList.add('active');
-      header.setAttribute('aria-expanded', 'true');
-      currentContent.style.maxHeight = `${currentContent.scrollHeight + 32}px`;
+      allSubItems.forEach(item => {
+        if (item !== currentItem) {
+          item.classList.remove('active');
+          const h = item.querySelector('.sub-header');
+          if (h) h.setAttribute('aria-expanded', 'false');
+          const c = item.querySelector(':scope > .accordion-content');
+          if (c) c.style.maxHeight = '0px';
+        }
+      });
+
+      if (isCurrentlyExpanded) {
+        currentContent.style.maxHeight = '0px';
+        currentItem.classList.remove('active');
+        header.setAttribute('aria-expanded', 'false');
+      } else {
+        currentItem.classList.add('active');
+        header.setAttribute('aria-expanded', 'true');
+        currentContent.style.maxHeight = `${currentContent.scrollHeight + 32}px`;
+      }
     }
   });
 });
