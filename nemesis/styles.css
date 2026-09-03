@@ -200,16 +200,17 @@ picture.logo-picture,
   margin-bottom: 0;
 }
 
-/* Third Row: List of Grantees Section on Halftone Texture Background in Nemesis White */
-.grantees-section {
+/* Third Row: Combined Grantees & Contact Dropdown Row on Halftone Texture Background */
+.grantees-contact-section {
   width: 100%;
   background-color: var(--nemesis-black);
   color: var(--nemesis-white);
-  padding: 100px 8%;
+  padding: 80px 8%;
   font-family: var(--font-mono);
   position: relative;
   overflow: hidden;
   z-index: 2;
+  min-height: 200px;
 }
 
 .grantees-texture {
@@ -226,44 +227,26 @@ picture.logo-picture,
   pointer-events: none;
 }
 
-.grantees-container {
+.grantees-contact-container {
   position: relative;
   z-index: 2;
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
-}
-
-.grantees-title {
-  font-family: var(--font-mono);
-  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
-  font-weight: normal;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 40px;
-  text-align: center;
-  color: var(--nemesis-white);
-  /* border-bottom: 2px solid var(--nemesis-white); */
-  padding-bottom: 16px;
-}
-
-.grantees-accordions {
   display: flex;
   flex-direction: column;
+  gap: clamp(16px, 2.5vw, 24px);
 }
 
+.dropdown-column {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Accordion Common Styles */
 .accordion-item {
-  border-bottom: 1.5px solid var(--nemesis-white);
   background-color: transparent;
-  backdrop-filter: none;
   transition: border-color 0.2s ease;
-}
-
-.accordion-item:first-child {
-  border-top: 1.5px solid var(--nemesis-white);
-}
-
-.accordion-item:hover {
-  background-color: transparent;
 }
 
 .accordion-header {
@@ -271,21 +254,12 @@ picture.logo-picture,
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 16px;
   background: transparent;
   border: none;
   color: var(--nemesis-white);
-  font-family: var(--font-mono);
-  font-size: clamp(1.2rem, 2vw, 1.7rem);
-  letter-spacing: 1px;
   cursor: pointer;
   text-align: left;
   user-select: none;
-}
-
-.year-label {
-  font-weight: normal;
-  color: var(--nemesis-white);
 }
 
 .accordion-icon {
@@ -294,9 +268,10 @@ picture.logo-picture,
   line-height: 1;
   color: var(--nemesis-white);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-block;
 }
 
-.accordion-item.active .accordion-icon {
+.accordion-item.active > .accordion-header .accordion-icon {
   transform: rotate(45deg);
 }
 
@@ -304,13 +279,63 @@ picture.logo-picture,
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 0 16px;
+}
+
+/* Top-Level Dropdown Items ("List of Grantees" & "Contact") */
+.top-level-item {
+  border: none;
+}
+
+.top-level-header {
+  padding: 16px 0;
+  font-family: var(--font-mono);
+  font-size: clamp(1.3rem, 2vw, 1.85rem);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.dropdown-title {
+  font-weight: normal;
+  color: var(--nemesis-white);
+}
+
+.top-level-content {
+  padding: 0;
+}
+
+/* Sub-level Accordions inside Grantees (2025, 2024) */
+.grantees-sub-accordions {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+  margin-bottom: 20px;
+}
+
+.sub-item {
+  border: none;
+}
+
+.sub-header {
+  padding: 12px 0;
+  font-family: var(--font-mono);
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  letter-spacing: 1px;
+}
+
+.year-label {
+  font-weight: normal;
+  color: var(--nemesis-white);
+}
+
+.sub-content {
+  padding: 0 4px;
 }
 
 .grantees-list {
   list-style-type: square;
   padding-left: 20px;
-  padding-bottom: 28px;
+  padding-bottom: 20px;
+  padding-top: 6px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -324,52 +349,26 @@ picture.logo-picture,
   color: var(--nemesis-white);
 }
 
-/* Fourth Row: Contact Section at Bottom in Nemesis Moonlight */
-.contact-section {
-  width: 100%;
-  background-color: var(--nemesis-moonlight);
-  color: var(--nemesis-black);
-  padding: 90px 8%;
-  font-family: var(--font-mono);
-  position: relative;
-  z-index: 2;
-}
-
-.contact-container {
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.contact-title {
-  font-family: var(--font-mono);
-  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
-  font-weight: normal;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 32px;
-  display: inline-block;
-  color: var(--nemesis-black);
-  border-bottom: 2px solid var(--nemesis-black);
-  padding-bottom: 12px;
-}
-
-.contact-info {
+/* Contact Details Expanded */
+.contact-details {
+  border: none;
+  margin-top: 4px;
+  padding: 12px 0 24px 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 16px;
-  font-size: clamp(1rem, 1.3vw, 1.25rem);
-  letter-spacing: 0.5px;
+  width: 100%;
 }
 
 .contact-line {
   margin: 0;
-  color: var(--nemesis-black);
+  color: var(--nemesis-white);
+  font-size: clamp(0.95rem, 1.2vw, 1.2rem);
+  letter-spacing: 0.5px;
+  font-family: var(--font-mono);
 }
 
 .contact-link {
-  color: var(--nemesis-black);
+  color: var(--nemesis-white);
   text-decoration: underline;
   text-underline-offset: 4px;
   transition: opacity 0.2s ease;
@@ -395,16 +394,28 @@ picture.logo-picture,
     padding: 50px 24px;
   }
 
-  .grantees-section {
-    padding: 70px 5%;
+  .grantees-contact-section {
+    padding: 60px 5%;
   }
 
-  .accordion-header {
-    padding: 18px 8px;
+  .grantees-contact-container {
+    gap: 20px;
   }
 
-  .accordion-content {
-    padding: 0 8px;
+  .top-level-header {
+    padding: 20px 4px;
+  }
+
+  .sub-header {
+    padding: 16px 4px;
+  }
+
+  .sub-content {
+    padding: 0 4px;
+  }
+
+  .contact-details {
+    padding: 20px 4px 24px 4px;
   }
 }
 
