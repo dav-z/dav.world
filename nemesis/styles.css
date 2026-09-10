@@ -349,8 +349,9 @@ picture.logo-picture,
   color: var(--nemesis-white);
 }
 
-/* Contact Details Expanded */
-.contact-details {
+/* Contact & Mythology Details Expanded */
+.contact-details,
+.mythology-details {
   border: none;
   margin-top: 4px;
   padding: 12px 0 24px 0;
@@ -359,7 +360,8 @@ picture.logo-picture,
   width: 100%;
 }
 
-.contact-line {
+.contact-line,
+.under-construction-line {
   margin: 0;
   color: var(--nemesis-white);
   font-size: clamp(0.95rem, 1.2vw, 1.2rem);
@@ -414,7 +416,8 @@ picture.logo-picture,
     padding: 0 4px;
   }
 
-  .contact-details {
+  .contact-details,
+  .mythology-details {
     padding: 20px 4px 24px 4px;
   }
 }
